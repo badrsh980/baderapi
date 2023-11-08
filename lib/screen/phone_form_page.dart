@@ -1,54 +1,24 @@
-import 'package:api/api/opjapi.dart';
 import 'package:api/model/madel.dart';
-import 'package:api/screen/object_create_successScreen.dart';
+import 'package:api/screen/new_phone_create_success.dart';
 import 'package:flutter/material.dart';
 
-class ObjectFormPage extends StatefulWidget {
+class NewPhonePage extends StatefulWidget {
   @override
-  _ObjectFormPageState createState() => _ObjectFormPageState();
+  _NewPhonePageState createState() => _NewPhonePageState();
 }
 
-class _ObjectFormPageState extends State<ObjectFormPage> {
+class _NewPhonePageState extends State<NewPhonePage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController yearController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController cpuModelController = TextEditingController();
   final TextEditingController hardDiskSizeController = TextEditingController();
 
-  Future<void> createObject() async {
-    final ObjectModel newObject = ObjectModel(
-      id: '0',
-      name: nameController.text,
-      data: {
-        'year': int.parse(yearController.text),
-        'price': double.parse(priceController.text),
-        'CPU model': cpuModelController.text,
-        'Hard disk size': hardDiskSizeController.text,
-      },
-      createdAt: '',
-    );
-
-    try {
-      final ObjectModel createdObject =
-          await ObjectCreateApi.createObject(newObject);
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              ObjectCreateSuccessScreen(createdObject: createdObject),
-        ),
-      );
-    } catch (e) {
-      print(e);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Object'),
+        title: Text('Create Phone'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -77,8 +47,27 @@ class _ObjectFormPageState extends State<ObjectFormPage> {
               decoration: const InputDecoration(labelText: 'Hard Disk Size'),
             ),
             ElevatedButton(
-              onPressed: createObject,
-              child: const Text('Create Object'),
+              onPressed: () async {
+                try {
+                  final createdPhone = await Phone.createPhone(
+                    name: nameController.text,
+                    year: int.parse(yearController.text),
+                    price: double.parse(priceController.text),
+                    cpuModel: cpuModelController.text,
+                    hardDiskSize: hardDiskSizeController.text,
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ObjectCreateSuccessScreen(
+                          PrintNewPhone: createdPhone),
+                    ),
+                  );
+                } catch (e) {
+                  print(e);
+                }
+              },
+              child: const Text('Create Phone'),
             ),
           ],
         ),
